@@ -1,6 +1,6 @@
 # Step 6: Docker and a Daily DigitalOcean Job
 
-Status: deployment files prepared. A cloud run and daily scheduling must be verified on a real Droplet before this step is complete.
+Status: Docker verified locally; manual DigitalOcean run verified; daily cron installed and active. Scheduled invocation has not yet been observed. Published evidence is linked in README.md.
 
 ## 1. Local Docker Verification (PowerShell)
 

@@ -1,0 +1,17 @@
+{
+  "run_id": "20261013T181846Z-5015",
+  "started_at": "2026-10-13T18:18:46Z",
+  "finished_at": "2026-10-13T18:18:56Z",
+  "exit_code": 0,
+  "execution_environment": "host-runner",
+  "status": "success",
+  "completed_at": "2026-10-13T18:18:55.330708+00:00",
+  "added": 0,
+  "updated": 0,
+  "skipped": 50,
+  "uploaded_chunk_files": 0,
+  "source_articles": 50,
+  "prepared_chunks": 55,
+  "indexed_chunk_files": 55,
+  "usage_bytes": 340908
+}

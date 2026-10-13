@@ -1,7 +1,6 @@
 # Coding Test Implementation Plan
 
-Status: Python configuration, ingestion and delta synchronization are complete. API upload, indexing and CLI retrieval have been verified: 50 source articles, 55 indexed chunk files, zero indexing failures. The UI demo has been observed; saved prompt and screenshot packaging need confirmation. Cloud deployment remains pending.
-Step 6 deployment files are prepared: Dockerfile, host runner, daily cron example and DigitalOcean instructions. Actual cloud provisioning and execution require a Droplet and SSH access.
+Status: ingestion, API upload, retrieval, delta sync and Docker are verified. Manual DigitalOcean execution succeeded and daily cron is installed/active. A captioned evidence video, UI screenshot, cloud artifacts and submission notes are packaged. Scheduled-trigger execution and saved UI prompt persistence remain unverified. Part 2 Planning remains separate.
 
 Scope: Part 1 Coding. Part 2 Planning is a separate deliverable. Budget: approximately eight focused hours, within the three-day submission window measured from the invitation email.
 
@@ -73,11 +72,11 @@ You are OptiBot, the customer-support bot for OptiSigns.com. • Tone: helpful, 
 - [x] At least 30 clean Markdown articles with source URLs (50 collected).
 - [x] Python API upload, indexing verification and explicit count definitions.
 - [ ] Exact prompt configured in the UI; YouTube answer screenshot with citations.
-- [ ] Dockerfile and daily cloud job with delta synchronization.
-- [ ] Job log link or last-run artifact.
+- [x] Dockerfile and daily cloud job with delta synchronization (manual cloud execution verified).
+- [x] Job logs and last-run artifact packaged in the repository.
 - [x] Environment template and secret exclusions.
-- [ ] GitHub repository with a non-brand name and clear commits.
-- [ ] README limited to one page, screenshot and demonstration video.
+- [x] GitHub repository with a non-brand name and clear commits.
+- [x] Concise README, screenshot and captioned evidence video packaged.
 - [ ] Part 1 and Part 2 separately labeled and submitted together.
 
 ## User-Owned Setup

@@ -1,0 +1,17 @@
+test_http_error_is_not_silently_ignored (test_ingestion.IngestionTests.test_http_error_is_not_silently_ignored) ... ok
+test_insufficient_articles_fails (test_ingestion.IngestionTests.test_insufficient_articles_fails) ... ok
+test_markdown_preserves_semantics (test_ingestion.IngestionTests.test_markdown_preserves_semantics) ... ok
+test_pagination_deduplicates_and_filters (test_ingestion.IngestionTests.test_pagination_deduplicates_and_filters) ... ok
+test_chunks_preserve_unicode_and_source (test_provider.ProviderTests.test_chunks_preserve_unicode_and_source) ... ok
+test_failed_indexing_does_not_mark_synced (test_provider.ProviderTests.test_failed_indexing_does_not_mark_synced) ... ok
+test_added_then_unchanged_does_not_upload (test_sync.SyncTests.test_added_then_unchanged_does_not_upload) ... ok
+test_cleanup_failure_resumes_without_reupload (test_sync.SyncTests.test_cleanup_failure_resumes_without_reupload) ... ok
+test_failed_indexing_retains_old_and_retry_reuses_upload (test_sync.SyncTests.test_failed_indexing_retains_old_and_retry_reuses_upload) ... ok
+test_legacy_migration_does_not_reupload (test_sync.SyncTests.test_legacy_migration_does_not_reupload) ... ok
+test_new_selection_does_not_delete_omitted_articles (test_sync.SyncTests.test_new_selection_does_not_delete_omitted_articles) ... ok
+test_rename_and_shrink_replaces_all_old_parts (test_sync.SyncTests.test_rename_and_shrink_replaces_all_old_parts) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.323s
+
+OK

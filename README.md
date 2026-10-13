@@ -1,30 +1,39 @@
 # Nimbus 47
 
-Python knowledge ingestion and daily synchronization coding exercise.
+Python support-document ingestion with OpenAI File Search and a daily Docker job.
 
-Status: ingestion, API upload, File Search and delta synchronization verified. Docker/deployment files prepared; cloud execution, screenshot packaging and artifact publication remain pending.
-See [PLAN.md](PLAN.md) for the eight-hour implementation plan and acceptance criteria.
+## Setup and Run
 
-Local setup: `py -m venv .venv`, then `.venv\Scripts\python.exe -m pip install -r requirements.txt`.
-Copy `.env.sample` to `.env` if absent, then set provider and API key (never commit secrets).
-Validate: `.venv\Scripts\python.exe main.py --check-config`.
-Scrape: `.venv\Scripts\python.exe main.py --scrape-only` (no AI API calls).
-Output: `data/articles/`, including `scrape-report.json` and YouTube guidance.
-Checks: `.venv\Scripts\python.exe -m unittest discover -s tests -v`.
-See `docs/STEP-03.md` for pagination and conversion behavior.
+Python 3.14. Create a virtual environment, install requirements.txt, copy .env.sample to .env and set AI_PROVIDER=openai and API_KEY. Never commit credentials.
 
-Upload/index: `.venv\Scripts\python.exe main.py --upload-only`.
-Demo: `.venv\Scripts\python.exe main.py --ask "How do I add a YouTube video?"`.
-Uses Responses API because Assistants API was sunset; the instructions match the brief verbatim.
-Chunking: <=3000 cl100k tokens per Markdown part, repeated title/source, paragraph boundaries where possible, no overlap;
-provider static chunking 4096/0. Counts distinguish source articles, local chunks and completed indexed files;
-the provider does not expose a direct internal embedding chunk total.
-Verified: 50 articles → 55 chunk files, indexing completed (0 failed), 340,908 bytes stored.
-The YouTube demo returned five bullets and the correct source Article URL.
-State/report/demo output: `state/openai.json`, `state/upload-report.json`, `state/last-answer.md` (ignored by Git).
-Daily-run entrypoint: `.venv\Scripts\python.exe main.py --sync` re-scrapes and logs added/updated/skipped.
-Changed articles are indexed before old parts are detached; pending transactions resume after failures.
-Verified live unchanged run: added=0 updated=0 skipped=50 uploaded_chunks=0. See `docs/STEP-05.md` for recovery limits.
-UI screenshot packaging: pending; see `docs/STEP-04.md`. Cloud daily job/log link: pending.
-Docker: `docker build -t nimbus-47:latest .`; pass credentials with `--env-file` and mount `/state` and `/data`.
-Default container command runs sync once. DigitalOcean runner, daily cron and evidence instructions: `docs/STEP-06.md`.
+```powershell
+py -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe main.py --check-config
+.\.venv\Scripts\python.exe main.py --scrape-only
+.\.venv\Scripts\python.exe main.py --upload-only
+.\.venv\Scripts\python.exe main.py --ask "How do I add a YouTube video?"
+.\.venv\Scripts\python.exe main.py --sync
+```
+
+## Design
+
+Paginated Zendesk API collects 50 English articles including YouTube. Markdown preserves headings, code and relative links with canonical source URLs. Python uploads through the API, polls indexing and persists remote IDs. Responses API replaces the retired Assistants API; the required prompt is unchanged.
+
+Chunking: <=3000 cl100k tokens per Markdown part, preferably paragraph boundaries, repeated title/source, no overlap. Provider static chunking: 4096/0. Verified: 50 articles, 55 indexed files, 340,908 storage bytes. Prepared chunks and indexed files are reported separately; internal embedding chunk totals are not exposed.
+
+Sync uses article IDs and SHA-256 of normalized Markdown. Replacement indexing finishes before old attachments are removed. Journaled transactions resume after failures; host locking prevents overlapping jobs. Omitted articles and detached raw files are retained. See [recovery limits](docs/STEP-05.md).
+
+## Docker and Cloud
+
+Build: `docker build -t nimbus-47:latest .`. Supply runtime secrets and mount state/data at /state and /data. Container runs sync once and exits. See [deployment commands](docs/STEP-06.md), including Windows path overrides.
+
+DigitalOcean manual execution succeeded. Cron is installed for **19:00 UTC / 02:00 Vietnam daily**, service active; an actual scheduled invocation has not yet been observed. State survives container replacement. Store expires after seven inactive days.
+
+## Evidence
+
+- [Cloud artifact](artifacts/digitalocean-last-run.json), [execution log](artifacts/cloud-verification.txt), [schedule](artifacts/cloud-schedule.txt).
+- [Playground screenshot](artifacts/assistant-playground.png), [video walkthrough](artifacts/coding-demo.mp4).
+- [12 passing tests](artifacts/test-results.txt): `python -m unittest discover -s tests -v`.
+
+UI uses GPT-6 Luna; CLI uses GPT-5.4 Mini. UI answer is correct and cited, but uses numbered steps and Full guide rather than bullet/Article URL formatting. Screenshot shows a draft prompt; saved UI configuration remains unverified. Video is a captioned evidence walkthrough, not a continuous screen recording. See [submission notes](docs/SUBMISSION.md).
