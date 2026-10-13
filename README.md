@@ -1,14 +1,20 @@
 # Nimbus 47
 
-Python support-document ingestion with OpenAI File Search and a daily Docker job.
+Python ingestion of 50 English support articles, OpenAI File Search and a daily Docker job.
 
-## Setup and Run
+## Setup and Local Run
 
-Python 3.14. Create a virtual environment, install requirements.txt, copy .env.sample to .env and set AI_PROVIDER=openai and API_KEY. Never commit credentials.
+Requires Python 3.14 and an OpenAI API key with billing enabled. In PowerShell:
 
 ```powershell
 py -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+if (-not (Test-Path .env)) { Copy-Item .env.sample .env }
+```
+
+Edit `.env`: set `AI_PROVIDER=openai`, `API_KEY` and `ARTICLE_LIMIT=50`. Never commit secrets.
+
+```powershell
 .\.venv\Scripts\python.exe main.py --check-config
 .\.venv\Scripts\python.exe main.py --scrape-only
 .\.venv\Scripts\python.exe main.py --upload-only
@@ -16,24 +22,18 @@ py -m venv .venv
 .\.venv\Scripts\python.exe main.py --sync
 ```
 
-## Design
+## Chunking and Daily Job
 
-Paginated Zendesk API collects 50 English articles including YouTube. Markdown preserves headings, code and relative links with canonical source URLs. Python uploads through the API, polls indexing and persists remote IDs. Responses API replaces the retired Assistants API; the required prompt is unchanged.
+Markdown parts contain at most 3000 cl100k tokens, repeated title/source and no overlap; provider chunking is 4096/0. Verified: 50 articles, 55 indexed files. Internal embedding chunk totals are not exposed. Responses API replaces the retired Assistants API.
 
-Chunking: <=3000 cl100k tokens per Markdown part, preferably paragraph boundaries, repeated title/source, no overlap. Provider static chunking: 4096/0. Verified: 50 articles, 55 indexed files, 340,908 storage bytes. Prepared chunks and indexed files are reported separately; internal embedding chunk totals are not exposed.
+Sync compares article IDs and SHA-256; replacements finish indexing before old attachments are removed. Docker runs once with durable state/data mounts. [Deployment instructions](docs/STEP-06.md).
 
-Sync uses article IDs and SHA-256 of normalized Markdown. Replacement indexing finishes before old attachments are removed. Journaled transactions resume after failures; host locking prevents overlapping jobs. Omitted articles and detached raw files are retained. See [recovery limits](docs/STEP-05.md).
+DigitalOcean cron runs at **19:00 UTC / 02:00 Vietnam daily**. [Job execution log](artifacts/cloud-verification.txt) · [last-run artifact](artifacts/digitalocean-last-run.json) · [cron configuration](artifacts/cloud-schedule.txt). Current evidence is a successful manual cloud run; the first scheduled invocation has not yet been observed.
 
-## Docker and Cloud
+## Sample Assistant Answer
 
-Build: `docker build -t nimbus-47:latest .`. Supply runtime secrets and mount state/data at /state and /data. Container runs sync once and exits. See [deployment commands](docs/STEP-06.md), including Windows path overrides.
+Question: **How do I add a YouTube video?** File Search retrieves the uploaded guide and the answer cites its Article URL.
 
-DigitalOcean manual execution succeeded. Cron is installed for **19:00 UTC / 02:00 Vietnam daily**, service active; an actual scheduled invocation has not yet been observed. State survives container replacement. Store expires after seven inactive days.
+<a href="artifacts/assistant-playground.png"><img src="artifacts/assistant-playground.png" alt="Playground YouTube answer with File Search and source citation" width="600"></a>
 
-## Evidence
-
-- [Cloud artifact](artifacts/digitalocean-last-run.json), [execution log](artifacts/cloud-verification.txt), [schedule](artifacts/cloud-schedule.txt).
-- [Playground screenshot](artifacts/assistant-playground.png), [video walkthrough](artifacts/coding-demo.mp4).
-- [12 passing tests](artifacts/test-results.txt): `python -m unittest discover -s tests -v`.
-
-UI uses GPT-6 Luna; CLI uses GPT-5.4 Mini. UI answer is correct and cited, but uses numbered steps rather than bullets; the Article URL label is present. Screenshot shows a draft prompt; saved UI configuration remains unverified. Video is a captioned evidence walkthrough, not a continuous screen recording. See [submission notes](docs/SUBMISSION.md).
+[Tests](artifacts/test-results.txt) · [Recovery limits](docs/STEP-05.md) · [Submission notes and video](docs/SUBMISSION.md). UI formatting differs from the requested bullets; the screenshot shows a draft. The store expires after seven inactive days.
