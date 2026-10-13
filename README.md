@@ -50,7 +50,7 @@ Markdown parts contain at most 3000 cl100k tokens, repeated title/source and no 
 
 Sync compares article IDs and SHA-256; replacements finish indexing before old attachments are removed. Docker runs once with durable state/data mounts. [Deployment instructions](docs/STEP-06.md).
 
-DigitalOcean cron runs at **19:00 UTC / 02:00 Vietnam daily**. [Job execution log](artifacts/cloud-verification.txt) · [last-run artifact](artifacts/digitalocean-last-run.json) · [cron configuration](artifacts/cloud-schedule.txt). Current evidence is a successful manual cloud run; the first scheduled invocation has not yet been observed.
+DigitalOcean cron runs at **19:00 UTC / 02:00 Vietnam daily**. [Job execution log](artifacts/cloud-verification.txt) · [last-run artifact](artifacts/digitalocean-last-run.json) · [cron configuration](artifacts/cloud-schedule.txt). Scheduled execution verified on October 14, 2026 at 02:00:01 Vietnam time: exit 0, 50 skipped, zero uploads. [Cron trigger](artifacts/cron-trigger.txt).
 
 ## Sample Assistant Answer
 

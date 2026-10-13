@@ -7,7 +7,7 @@
 
 ## Evidence and Limitations
 
-50 English articles and 55 indexed chunk files; exact prompt, API upload and File Search implemented. Docker and manual cloud runs succeeded. Daily cron is installed and active; scheduled invocation not yet observed.
+50 English articles and 55 indexed chunk files; exact prompt, API upload and File Search implemented. Docker and manual cloud runs succeeded. Daily cron is installed and active; scheduled invocation verified on October 14, 2026 at 02:00 Vietnam time.
 
 Responses API replaces the retired Assistants API. UI model differs from CLI due to observed UI availability. The UI answer is correct and cited but uses numbered steps rather than bullets; the Article URL label is present. Screenshot is a draft, not proof of saved prompt persistence.
 

@@ -1,6 +1,6 @@
 # Step 6: Docker and a Daily DigitalOcean Job
 
-Status: Docker verified locally; manual DigitalOcean run verified; daily cron installed and active. Scheduled invocation has not yet been observed. Published evidence is linked in README.md.
+Status: Docker verified locally; manual DigitalOcean run verified; daily cron installed and active. Scheduled invocation verified: October 13, 2026 at 19:00:01 UTC (October 14 at 02:00:01 Vietnam), exit 0. Published evidence is linked in README.md.
 
 ## 1. Local Docker Verification (PowerShell)
 
