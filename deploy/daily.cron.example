@@ -1,0 +1,5 @@
+# Install in the deployment user's crontab after setting the host timezone to UTC.
+# 19:00 UTC = 02:00 Asia/Ho_Chi_Minh the following day.
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+0 19 * * * /bin/bash /opt/nimbus-47/app/deploy/run-sync.sh >> /opt/nimbus-47/logs/scheduler.log 2>&1

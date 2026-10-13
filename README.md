@@ -2,7 +2,7 @@
 
 Python knowledge ingestion and daily synchronization coding exercise.
 
-Status: ingestion, API upload, File Search and delta synchronization verified. UI demo observed; screenshot packaging and cloud deployment remain pending.
+Status: ingestion, API upload, File Search and delta synchronization verified. Docker/deployment files prepared; cloud execution, screenshot packaging and artifact publication remain pending.
 See [PLAN.md](PLAN.md) for the eight-hour implementation plan and acceptance criteria.
 
 Local setup: `py -m venv .venv`, then `.venv\Scripts\python.exe -m pip install -r requirements.txt`.
@@ -26,3 +26,5 @@ Daily-run entrypoint: `.venv\Scripts\python.exe main.py --sync` re-scrapes and l
 Changed articles are indexed before old parts are detached; pending transactions resume after failures.
 Verified live unchanged run: added=0 updated=0 skipped=50 uploaded_chunks=0. See `docs/STEP-05.md` for recovery limits.
 UI screenshot packaging: pending; see `docs/STEP-04.md`. Cloud daily job/log link: pending.
+Docker: `docker build -t nimbus-47:latest .`; pass credentials with `--env-file` and mount `/state` and `/data`.
+Default container command runs sync once. DigitalOcean runner, daily cron and evidence instructions: `docs/STEP-06.md`.
