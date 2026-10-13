@@ -17,6 +17,7 @@ def main() -> int:
     actions.add_argument('--scrape-only', action='store_true', help='Download English articles as Markdown; no AI API calls')
     actions.add_argument('--upload-only', action='store_true', help='Upload/index the existing scrape dataset via OpenAI API')
     actions.add_argument('--ask', metavar='QUESTION', help='Ask using Responses API and File Search (billable)')
+    actions.add_argument('--sync', action='store_true', help='Re-scrape and synchronize new/updated articles')
     args = parser.parse_args()
     try:
         settings = load_settings()
@@ -44,7 +45,7 @@ def main() -> int:
         logging.info('Configuration valid: provider=%s article_limit=%d', settings.provider, settings.article_limit)
         logging.info('API key present; credentials have not been verified with the provider.')
         return 0
-    if args.scrape_only:
+    if args.scrape_only or args.sync:
         from src.scraper import ZendeskScraper
         from src.markdown import article_filename, article_markdown
         scraper = ZendeskScraper(settings.help_center_url)
@@ -64,13 +65,21 @@ def main() -> int:
             report = {'completed_at': datetime.now(timezone.utc).isoformat(), 'count': len(records), 'articles': records}
             (settings.data_dir / 'scrape-report.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
             logging.info('Scrape complete: saved=%d directory=%s; no AI upload performed', len(records), settings.data_dir)
+            if args.sync:
+                from openai import OpenAIError
+                from src.provider import KnowledgeBase
+                try:
+                    KnowledgeBase(settings).upload()
+                except (OpenAIError, ValueError, OSError, KeyError, TimeoutError) as error:
+                    logging.error('Sync failed (%s); saved state can be retried.', type(error).__name__)
+                    return 1
             return 0
         except (requests.RequestException, ValueError, KeyError, OSError) as error:
             logging.error('Scrape failed (%s). Check network/API response and output permissions.', type(error).__name__)
             return 1
         finally:
             scraper.close()
-    logging.error('Choose --check-config, --scrape-only, --upload-only or --ask. Daily sync is implemented in step 5.')
+    logging.error('Choose --check-config, --scrape-only, --upload-only, --sync or --ask.')
     return 1
 
 

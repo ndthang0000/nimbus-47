@@ -59,6 +59,12 @@ class KnowledgeBase:
         self.state = json.loads(self.path.read_text(encoding='utf-8')) if self.path.exists() else {'files': {}}
 
     def upload(self):
+        from src.sync import synchronize
+        if self.state.get('batch_id'):
+            self._legacy_upload()
+        return synchronize(self)
+
+    def _legacy_upload(self):
         report = json.loads((self.settings.data_dir / 'scrape-report.json').read_text(encoding='utf-8'))
         if len(report['articles']) < self.settings.article_limit:
             raise ValueError('Scrape report has fewer articles than configured.')
@@ -123,7 +129,7 @@ class KnowledgeBase:
 
     def ask(self, question: str):
         store_id = self.state.get('vector_store_id')
-        if not store_id or not self.state['files'] or not all(f['indexed'] for f in self.state['files'].values()):
+        if self.state.get('pending') or not store_id or not self.state['files'] or not all(f['indexed'] for f in self.state['files'].values()):
             raise ValueError('Upload/index documents successfully before asking.')
         response = self.client.responses.create(
             model=os.getenv('OPENAI_MODEL', 'gpt-5.4-mini'), instructions=PROMPT,

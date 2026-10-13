@@ -2,7 +2,7 @@
 
 Python knowledge ingestion and daily synchronization coding exercise.
 
-Status: 50-article ingestion, API vector-store upload and Responses/File Search demo verified. UI screenshot and cloud deployment pending.
+Status: ingestion, API upload, File Search and delta synchronization verified. UI demo observed; screenshot packaging and cloud deployment remain pending.
 See [PLAN.md](PLAN.md) for the eight-hour implementation plan and acceptance criteria.
 
 Local setup: `py -m venv .venv`, then `.venv\Scripts\python.exe -m pip install -r requirements.txt`.
@@ -22,5 +22,7 @@ the provider does not expose a direct internal embedding chunk total.
 Verified: 50 articles → 55 chunk files, indexing completed (0 failed), 340,908 bytes stored.
 The YouTube demo returned five bullets and the correct source Article URL.
 State/report/demo output: `state/openai.json`, `state/upload-report.json`, `state/last-answer.md` (ignored by Git).
-Rerunning the unchanged upload reuses the store and files. Changed-document replacement is pending step 5.
-UI screenshot: pending; see `docs/STEP-04.md`. Cloud daily job/log link: pending.
+Daily-run entrypoint: `.venv\Scripts\python.exe main.py --sync` re-scrapes and logs added/updated/skipped.
+Changed articles are indexed before old parts are detached; pending transactions resume after failures.
+Verified live unchanged run: added=0 updated=0 skipped=50 uploaded_chunks=0. See `docs/STEP-05.md` for recovery limits.
+UI screenshot packaging: pending; see `docs/STEP-04.md`. Cloud daily job/log link: pending.

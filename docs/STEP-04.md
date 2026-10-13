@@ -24,7 +24,7 @@ You are OptiBot, the customer-support bot for OptiSigns.com. • Tone: helpful, 
 - Save state atomically after each upload. Persist batch IDs to resume interrupted indexing.
 - Mark files indexed only when the batch completes without failed or cancelled files.
 - The store expires after seven inactive days. Renew or recreate it if needed before review.
-- Unchanged uploads reuse existing files. Updated-document replacement is pending step 5.
+- Unchanged uploads reuse existing files. Step 5 adds article-level replacement; see STEP-05.md.
 
 ## Artifacts
 

@@ -36,7 +36,7 @@ class ProviderTests(unittest.TestCase):
             client.vector_stores.file_batches.retrieve.return_value = SimpleNamespace(status='failed', file_counts=SimpleNamespace(completed=0, failed=1, cancelled=0))
             loader = KnowledgeBase(settings, client=client)
             with self.assertRaisesRegex(ValueError, 'Indexing failed'):
-                loader.upload()
+                loader._legacy_upload()
             saved = json.loads(loader.path.read_text())
             self.assertFalse(saved['files']['one-part-1.md']['indexed'])
             self.assertEqual(saved['batch_id'], 'batch_test')

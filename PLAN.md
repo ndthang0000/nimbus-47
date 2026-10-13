@@ -1,6 +1,6 @@
 # Coding Test Implementation Plan
 
-Status: Python configuration and ingestion are complete. API upload, indexing and CLI retrieval have been verified: 50 source articles, 55 indexed chunk files, zero indexing failures. UI prompt setup and screenshot remain pending. Delta updates and cloud deployment remain pending.
+Status: Python configuration, ingestion and delta synchronization are complete. API upload, indexing and CLI retrieval have been verified: 50 source articles, 55 indexed chunk files, zero indexing failures. The UI demo has been observed; saved prompt and screenshot packaging need confirmation. Cloud deployment remains pending.
 
 Scope: Part 1 Coding. Part 2 Planning is a separate deliverable. Budget: approximately eight focused hours, within the three-day submission window measured from the invitation email.
 
