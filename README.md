@@ -36,4 +36,4 @@ DigitalOcean manual execution succeeded. Cron is installed for **19:00 UTC / 02:
 - [Playground screenshot](artifacts/assistant-playground.png), [video walkthrough](artifacts/coding-demo.mp4).
 - [12 passing tests](artifacts/test-results.txt): `python -m unittest discover -s tests -v`.
 
-UI uses GPT-6 Luna; CLI uses GPT-5.4 Mini. UI answer is correct and cited, but uses numbered steps and Full guide rather than bullet/Article URL formatting. Screenshot shows a draft prompt; saved UI configuration remains unverified. Video is a captioned evidence walkthrough, not a continuous screen recording. See [submission notes](docs/SUBMISSION.md).
+UI uses GPT-6 Luna; CLI uses GPT-5.4 Mini. UI answer is correct and cited, but uses numbered steps rather than bullets; the Article URL label is present. Screenshot shows a draft prompt; saved UI configuration remains unverified. Video is a captioned evidence walkthrough, not a continuous screen recording. See [submission notes](docs/SUBMISSION.md).

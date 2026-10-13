@@ -27,7 +27,7 @@ slides = [
 ('6 | Container and daily cloud job', read('Dockerfile')+'\nDaily schedule: 0 19 * * * (UTC) = 02:00 Vietnam\nState and data are bind-mounted outside the container.\nCron installed and active; scheduled invocation not yet observed.', True),
 ('7 | Actual DigitalOcean execution', read('artifacts/cloud-verification.txt')+'\n'+json.dumps({k:report[k] for k in ['status','exit_code','added','updated','skipped','uploaded_chunk_files','source_articles','indexed_chunk_files']},indent=2), True),
 ('8 | Playground YouTube answer', 'SCREENSHOT', False),
-('9 | Verification and submission', '12 behavioral tests passed. Live cloud run: 50 skipped, zero uploads, exit 0.\n\nRepository: github.com/ndthang0000/nimbus-47\nEvidence: artifacts/digitalocean-last-run.json and cloud-verification.txt\n\nUI: GPT-6 Luna. CLI: GPT-5.4 Mini. Screenshot answer is correct and cited, but uses numbered steps / Full guide label; draft prompt persistence is unverified.\n\nPart 2 Planning is a separate submission. See README and docs/SUBMISSION.md for setup and limitations.', False),
+('9 | Verification and submission', '12 behavioral tests passed. Live cloud run: 50 skipped, zero uploads, exit 0.\n\nRepository: github.com/ndthang0000/nimbus-47\nEvidence: artifacts/digitalocean-last-run.json and cloud-verification.txt\n\nUI: GPT-6 Luna. CLI: GPT-5.4 Mini. Screenshot answer is correct and cited, but uses numbered steps instead of bullets; draft prompt persistence is unverified.\n\nPart 2 Planning is a separate submission. See README and docs/SUBMISSION.md for setup and limitations.', False),
 ]
 with tempfile.TemporaryDirectory() as folder:
     temp = Path(folder)
@@ -41,7 +41,7 @@ with tempfile.TemporaryDirectory() as folder:
             shot=Image.open(OUT/'assistant-playground.png').convert('RGB')
             shot.thumbnail((1490,700))
             im.paste(shot,((1600-shot.width)//2,115))
-            draw.text((55,835),'Actual supplied screenshot: exact prompt, retrieved file and cited YouTube answer.',font=ImageFont.truetype(FONT,21),fill='white')
+            draw.text((55,835),'Actual supplied screenshot: File Search enabled, retrieved file and YouTube answer with Article URL.',font=ImageFont.truetype(FONT,21),fill='white')
         else:
             font=ImageFont.truetype(MONO if code else FONT,21 if code else 29)
             width=112 if code else 88

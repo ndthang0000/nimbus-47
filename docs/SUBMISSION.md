@@ -9,7 +9,7 @@
 
 50 English articles and 55 indexed chunk files; exact prompt, API upload and File Search implemented. Docker and manual cloud runs succeeded. Daily cron is installed and active; scheduled invocation not yet observed.
 
-Responses API replaces the retired Assistants API. UI model differs from CLI due to observed UI availability. The UI answer is correct and cited but does not fully follow bullet/source-label formatting. Screenshot is a draft, not proof of saved prompt persistence.
+Responses API replaces the retired Assistants API. UI model differs from CLI due to observed UI availability. The UI answer is correct and cited but uses numbered steps rather than bullets; the Article URL label is present. Screenshot is a draft, not proof of saved prompt persistence.
 
 Video is a captioned walkthrough of real code, logs and the supplied UI screenshot, not a continuous recording or voiceover. It does not recreate an initial upload as a new live event.
 
