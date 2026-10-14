@@ -46,11 +46,11 @@ On a fresh setup, run scrape, upload, then ask; sync performs scrape and upload 
 
 ## Chunking and Daily Job
 
-Each article is uploaded as one complete Markdown file. OpenAI manages chunking and embedding with static 4096-token chunks and zero overlap. Target dataset: 50 articles / 50 indexed files. Internal embedding chunk totals are not exposed. Responses API replaces the retired Assistants API.
+Each article is uploaded as one complete Markdown file. OpenAI manages chunking and embedding with static 4096-token chunks and zero overlap. Verified dataset: 50 articles / 50 indexed files. Internal embedding chunk totals are not exposed. Responses API replaces the retired Assistants API.
 
 Sync compares article IDs and SHA-256; replacements finish indexing before old attachments are removed. Docker runs once with durable state/data mounts. [Deployment instructions](docs/STEP-06.md).
 
-DigitalOcean cron runs at **19:00 UTC / 02:00 Vietnam daily**. [Job execution log](artifacts/cloud-verification.txt) Â· [last-run artifact](artifacts/digitalocean-last-run.json) Â· [cron configuration](artifacts/cloud-schedule.txt). Scheduled execution verified on October 14, 2026 at 02:00:01 Vietnam time: exit 0, 50 skipped, zero uploads. [Cron trigger](artifacts/cron-trigger.txt).
+DigitalOcean cron runs at **19:00 UTC / 02:00 Vietnam daily**. [Job execution log](artifacts/cloud-verification.txt) Â· [last-run artifact](artifacts/digitalocean-last-run.json) Â· [cron configuration](artifacts/cloud-schedule.txt). Daily scheduling was verified on October 14, 2026 at 02:00:01 Vietnam time. The current whole-article image also passed a manual cloud run: 50 skipped, zero uploads. [Cron trigger](artifacts/cron-trigger.txt).
 
 ## Sample Assistant Answer
 
@@ -60,4 +60,4 @@ Question: **How do I add a YouTube video?** File Search retrieves the uploaded g
 
 [Tests](artifacts/test-results.txt) Â· [Recovery limits](docs/STEP-05.md) Â· [Submission notes and video](docs/SUBMISSION.md). UI formatting differs from the requested bullets; the screenshot shows a draft. The store expires after seven inactive days.
 
-The existing walkthrough video and Playground screenshot are historical evidence; record a new demo against the active store before submission.
+The existing walkthrough video and Playground screenshot are historical evidence; record a new demo against the active store before submission. Active store: `Nimbus 47 Articles` (`vs_6acf0a33dbb081918de892e4a399f092`). File citations are present in API annotations; the model may omit the Article URL in plain-text output.

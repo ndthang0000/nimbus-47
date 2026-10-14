@@ -1,0 +1,26 @@
+{
+  "completed_at": "2026-10-14T04:59:04.884264+00:00",
+  "vector_store_id": "vs_6acf0a33dbb081918de892e4a399f092",
+  "added": 0,
+  "updated": 0,
+  "skipped": 50,
+  "uploaded_files": 0,
+  "source_articles": 50,
+  "indexed_files": 50,
+  "provider_file_counts": {
+    "cancelled": 0,
+    "completed": 50,
+    "failed": 0,
+    "in_progress": 0,
+    "total": 50
+  },
+  "usage_bytes": 335012,
+  "chunking_strategy": {
+    "type": "static",
+    "static": {
+      "max_chunk_size_tokens": 4096,
+      "chunk_overlap_tokens": 0
+    }
+  },
+  "count_note": "One Markdown file per article; OpenAI performs chunking and embedding. Internal chunk total is not exposed."
+}

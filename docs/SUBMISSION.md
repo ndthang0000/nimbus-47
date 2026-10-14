@@ -37,3 +37,5 @@ Best regards,
 Nguyen Duc Thang
 
 The current video/screenshot predate the active store. Replace them with a user-recorded demo; do not present their old file counts as current.
+
+Whole-article deployment: current manual run succeeded with 50 indexed files. The daily schedule remains active; its next invocation will use the new image. Native file citations work; plain-text Article URL formatting can vary.

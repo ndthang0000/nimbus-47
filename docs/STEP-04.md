@@ -45,3 +45,5 @@ If the UI cannot support the required demo, clarify an equivalent demonstration 
 - https://developers.openai.com/api/docs/assistants/migration
 - https://developers.openai.com/api/docs/guides/tools-file-search
 - https://developers.openai.com/api/reference/resources/vector_stores/subresources/file_batches/methods/create
+
+Active store: Nimbus 47 Articles (`vs_6acf0a33dbb081918de892e4a399f092`). Select this store in Playground File Search; previous screenshots are historical. Native API file_citation annotations reference the whole-article files. Article URL text is model-generated and is not guaranteed on every answer.

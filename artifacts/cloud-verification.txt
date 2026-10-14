@@ -1,7 +1,7 @@
-Started UTC=2026-10-13T19:00:01Z image=nimbus-47:latest
-2026-10-13 19:00:05,321 INFO YouTube article selected: id=360051014713 title=How to Use YouTube with OptiSigns
-2026-10-13 19:00:05,977 INFO Fetched page=1 selected=26 target=50
-2026-10-13 19:00:06,473 INFO Fetched page=2 selected=50 target=50
-2026-10-13 19:00:07,949 INFO Scrape complete: saved=50 directory=/data/articles; no AI upload performed
-2026-10-13 19:00:13,155 INFO Sync complete: added=0 updated=0 skipped=50 uploaded_chunks=0
-Finished UTC=2026-10-13T19:00:14Z exit_code=0
+Started UTC=2026-10-14T04:59:51Z image=nimbus-47:latest
+2026-10-14 04:59:53,610 INFO YouTube article selected: id=360051014713 title=How to Use YouTube with OptiSigns
+2026-10-14 04:59:54,013 INFO Fetched page=1 selected=26 target=50
+2026-10-14 04:59:54,469 INFO Fetched page=2 selected=50 target=50
+2026-10-14 04:59:55,308 INFO Scrape complete: saved=50 directory=/data/articles; no AI upload performed
+2026-10-14 04:59:57,668 INFO Sync complete: added=0 updated=0 skipped=50 uploaded_files=0
+Finished UTC=2026-10-14T04:59:58Z exit_code=0

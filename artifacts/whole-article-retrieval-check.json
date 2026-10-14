@@ -1,0 +1,20 @@
+{
+  "vector_store_id": "vs_6acf0a33dbb081918de892e4a399f092",
+  "results": [
+    {
+      "question": "How do I add a YouTube video?",
+      "answer": "To add a YouTube video in OptiSigns:\n\n- Go to Files/Assets and click Apps, then search for and select YouTube. \n- Paste the YouTube link into the URL field. OptiSigns accepts regular video links, share links, and Shorts links. The URL is the only required field. \n- Optional: set a Name, turn on Caption or Mute, and use Playback options to set a Start At or End At time. \n- As soon as the URL is valid, the video previews on the right so you can confirm it before saving. \n- Click Save, then assign the video to a screen, playlist, schedule, or split screen. \n\nArticle URL: https://support.optisigns.com/hc/en-us/articles/360051014713-How-to-Use-YouTube-with-OptiSigns\n\n",
+      "response_id": "resp_077f47c964b14316006acf0acedbf887d19ffe7e73e30c4a7f"
+    },
+    {
+      "question": "How do I manage user roles in OptiSigns?",
+      "answer": "You can manage user roles in OptiSigns from the Account Members area. Only the Account Owner or a Super Admin can do this, and role security is available on Pro Plus plans or above. \n\n- Go to your user profile and open the Account Members tab. From there you can Add, Invite, Manage Roles, and Manage Members. \n- Use Manage Roles to view default roles or create custom roles. OptiSigns includes roles like Owner, Super Admin, Admin, User, Content Proposal, Content Approval, and Read Only. \n- To create a custom role, click Manage Roles, then New Role, choose the permissions, name the role, and Save. \n- To assign roles to users, choose Add or Invite, then select the role from the dropdown when adding the user. \n- To update users later, use Manage Members to reassign roles and move users between teams. \n\nArticle URL: https://support.optisigns.com/hc/en-us/articles/360046356113-Advanced-Security-Managing-User-Roles",
+      "response_id": "resp_0f1bfa0da17ebeb5006acf0ad3759087d1aabd31aa5ba2e333"
+    },
+    {
+      "question": "How do I bake a chocolate cake?",
+      "answer": "I couldn’t find any chocolate cake instructions in the uploaded OptiSigns help docs. The available files are about OptiSigns topics like Fire Stick setup, playback reports, custom domain mapping, remote agent install, and Raspberry Pi GPU memory.   \n\nIf you want, I can help with an OptiSigns how-to from the docs instead.",
+      "response_id": "resp_0b2be172e660ead0006acf0ad7fbc487d18194bfd6b3d6a6f4"
+    }
+  ]
+}
