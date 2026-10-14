@@ -40,18 +40,18 @@ class SyncTests(unittest.TestCase):
         self.client.files.create.assert_not_called()
         self.client.vector_stores.file_batches.create.assert_not_called()
 
-    def test_rename_and_shrink_replaces_all_old_parts(self):
+    def test_rename_and_shrink_replaces_article(self):
         self.write('Long text. ' * 6000)
         self.run_sync()
         old_count = self.client.files.create.call_count
-        self.assertGreater(old_count, 1)
+        self.assertEqual(old_count, 1)
         self.client.reset_mock()
         self.write('Short changed text', filename='1-renamed.md')
         result = self.run_sync()
         self.assertEqual(result['updated'], 1)
-        self.assertEqual(result['uploaded_chunk_files'], 1)
+        self.assertEqual(result['uploaded_files'], 1)
         self.assertEqual(self.client.vector_stores.files.delete.call_count, old_count)
-        self.assertEqual(result['indexed_chunk_files'], 1)
+        self.assertEqual(result['indexed_files'], 1)
 
     def test_failed_indexing_retains_old_and_retry_reuses_upload(self):
         self.run_sync()
@@ -82,16 +82,26 @@ class SyncTests(unittest.TestCase):
         self.client.files.create.assert_not_called()
         self.client.vector_stores.file_batches.create.assert_not_called()
 
-    def test_legacy_migration_does_not_reupload(self):
+    def test_state_strategy_mismatch_is_rejected(self):
         self.run_sync()
         k = KnowledgeBase(self.settings, self.client)
-        del k.state['articles']
-        del k.state['pending']
+        k.state['ingestion_strategy'] = 'unsupported'
         from src.provider import save_json
         save_json(k.path, k.state)
         self.client.reset_mock()
-        self.assertEqual(self.run_sync()['skipped'], 1)
+        with self.assertRaisesRegex(ValueError, 'Incompatible state'):
+            self.run_sync()
         self.client.files.create.assert_not_called()
+
+    def test_same_hash_with_different_article_strategy_is_reindexed(self):
+        self.run_sync()
+        k = KnowledgeBase(self.settings, self.client)
+        k.state['articles']['1']['ingestion_strategy'] = 'unsupported'
+        from src.provider import save_json
+        save_json(k.path, k.state)
+        self.client.reset_mock()
+        self.assertEqual(self.run_sync()['updated'], 1)
+        self.client.files.create.assert_called_once()
 
     def test_new_selection_does_not_delete_omitted_articles(self):
         self.run_sync()

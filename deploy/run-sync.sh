@@ -49,8 +49,8 @@ artifact = {'run_id': run_id, 'started_at': started, 'finished_at': finished,
             'status': 'success' if exit_code == '0' else 'failed'}
 if exit_code == '0':
     report = json.loads((root/'state/sync-report.json').read_text(encoding='utf-8'))
-    for field in ('completed_at', 'added', 'updated', 'skipped', 'uploaded_chunk_files',
-                  'source_articles', 'prepared_chunks', 'indexed_chunk_files', 'usage_bytes'):
+    for field in ('completed_at', 'added', 'updated', 'skipped', 'uploaded_files',
+                  'source_articles', 'indexed_files', 'usage_bytes'):
         artifact[field] = report[field]
 target = root/'artifacts'/f'{run_id}.json'
 target.write_text(json.dumps(artifact, indent=2) + '\n', encoding='utf-8')

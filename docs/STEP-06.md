@@ -10,7 +10,7 @@ docker run --rm --env-file .env nimbus-47:latest --check-config
 docker run --rm --user 0:0 --env-file .env -e STATE_DIR=/state -e DATA_DIR=/data/articles --mount "type=bind,src=$($PWD.Path)\state,dst=/state" --mount "type=bind,src=$($PWD.Path)\data,dst=/data" nimbus-47:latest
 ```
 
-The default command runs `main.py --sync` once. Successful runs exit zero. The environment file is supplied at runtime and excluded from the build context. The image includes a cached tokenizer so retrieval preparation does not need to download it during each run.
+The default command runs `main.py --sync` once. Successful runs exit zero. The environment file is supplied at runtime and excluded from the build context.
 The Windows bind-mount command uses container root to accommodate Docker Desktop permissions on existing files. The Linux host runner uses the deployment account's UID/GID instead. The image defaults to a non-root user.
 
 ## 2. Provision a Droplet
@@ -52,7 +52,7 @@ echo $?
 cat /opt/nimbus-47/artifacts/latest-run.json
 ```
 
-Run twice. If source content is unchanged, each run should skip 50 articles and upload zero chunks. Check the original store ID remains in the manifest. The runner mounts host state/data, locks the entire operation, captures stdout/stderr and preserves the container exit code.
+Run twice. If source content is unchanged, each run should skip 50 articles and upload zero files. Check the original store ID remains in the manifest. The runner mounts host state/data, locks the entire operation, captures stdout/stderr and preserves the container exit code.
 
 Host layout:
 

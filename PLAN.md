@@ -6,7 +6,7 @@ Scope: Part 1 Coding. Part 2 Planning is a separate deliverable. Budget: approxi
 
 ## Objective
 
-Help Center → Python → Markdown → API knowledge-base upload → grounded assistant answers with source URLs.
+Help Center â†’ Python â†’ Markdown â†’ API knowledge-base upload â†’ grounded assistant answers with source URLs.
 Deploy a daily cloud job that uploads only new or changed content. Use the platform UI for the required demo; a custom chat frontend is outside the required scope.
 
 ## Implementation Steps
@@ -30,7 +30,7 @@ Total: 480 minutes. Record actual time. If the budget is exhausted, submit worki
 - Python handles ingestion and API uploads. Dependencies are declared in requirements.txt.
 - The dataset contains 50 articles, including the YouTube guide; remaining articles are selected alphabetically. This does not guarantee full product coverage.
 - Every document and prepared chunk contains an `Article URL:` source line.
-- Local chunks are at most 3000 cl100k tokens, with repeated title/source and no overlap. Provider chunking uses 4096 tokens and zero overlap.
+- Upload each full article as one Markdown file; provider chunking uses 4096 tokens and zero overlap.
 - Distinguish source article counts, prepared chunks and completed indexed files. The provider does not expose a direct internal embedding chunk total.
 - Persist remote upload IDs immediately for recovery; mark indexing successful only after completion. Delta replacement will remove stale retrieval content.
 - Cloud state must survive ephemeral containers: choose persistent storage or object storage.
@@ -55,7 +55,7 @@ PLAN.md
 
 ## Required Prompt
 
-You are OptiBot, the customer-support bot for OptiSigns.com. • Tone: helpful, factual, concise. • Only answer using the uploaded docs. • Max 5 bullet points; else link to the doc. • Cite up to 3 "Article URL:" lines per reply.
+You are OptiBot, the customer-support bot for OptiSigns.com. â€¢ Tone: helpful, factual, concise. â€¢ Only answer using the uploaded docs. â€¢ Max 5 bullet points; else link to the doc. â€¢ Cite up to 3 "Article URL:" lines per reply.
 
 ## Verification Scenarios
 

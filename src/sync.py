@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 
 from openai import NotFoundError
 
-from src.provider import STRATEGY, save_json, split_document
+from src.provider import STRATEGY, save_json
 
 LOGGER = logging.getLogger(__name__)
 
@@ -56,6 +56,8 @@ def _synchronize(k):
     report = json.loads((settings.data_dir / 'scrape-report.json').read_text(encoding='utf-8'))
     if len(report['articles']) < settings.article_limit:
         raise ValueError('Scrape report has fewer articles than configured.')
+    if state.get('schema_version') != 2 or state.get('ingestion_strategy') != 'whole_article_v1':
+        raise ValueError('Incompatible state schema. Use the matching state directory.')
     prepared = {}
     for item in report['articles']:
         article_id = str(item['id'])
@@ -63,33 +65,16 @@ def _synchronize(k):
         if path.parent != settings.data_dir.resolve() or article_id in prepared:
             raise ValueError('Invalid or duplicate article in scrape report.')
         text = path.read_text(encoding='utf-8').replace('\r\n', '\n')
-        chunks = split_document(text)
-        if not chunks:
+        if not text.strip():
             raise ValueError('Article has no content.')
+        if len(text.encode('utf-8')) > 16 * 1024 * 1024:
+            raise ValueError('Article exceeds the application upload limit of 16 MiB.')
         prepared[article_id] = {'sha256': hashlib.sha256(text.encode()).hexdigest(),
-                                'chunks': chunks, 'stem': path.stem}
+                                'content': text, 'filename': f'{article_id}.md'}
     if not state.get('vector_store_id'):
-        state['vector_store_id'] = client.vector_stores.create(name='Nimbus 47 knowledge', expires_after={'anchor': 'last_active_at', 'days': 7}).id
+        state['vector_store_id'] = client.vector_stores.create(name='Nimbus 47 Articles', expires_after={'anchor': 'last_active_at', 'days': 7}).id
         save_json(k.path, state)
     store_id = state['vector_store_id']
-    if 'articles' not in state:
-        if state.get('batch_id') or any(not f['indexed'] for f in state.get('files', {}).values()):
-            raise ValueError('Finish the legacy upload before migrating sync state.')
-        state['articles'] = {}
-        # Reuse existing indexed files without uploading the dataset again.
-        for article_id, doc in prepared.items():
-            old = {n: f for n, f in state.get('files', {}).items() if n.split('-', 1)[0] == article_id}
-            if old:
-                expected = {f"{doc['stem']}-part-{i}.md": hashlib.sha256(c.encode()).hexdigest() for i, c in enumerate(doc['chunks'], 1)}
-                matches = set(old) == set(expected) and all(old[n]['sha256'] == expected[n] for n in old)
-                state['articles'][article_id] = {'sha256': doc['sha256'] if matches else 'legacy-changed', 'files': old}
-        # Keep historical articles outside the current selection; omission is not deletion.
-        for name, record in state.get('files', {}).items():
-            article_id = name.split('-', 1)[0]
-            if article_id not in prepared:
-                state['articles'].setdefault(article_id, {'sha256': 'legacy', 'files': {}})['files'][name] = record
-        state['pending'] = {}
-        save_json(k.path, state)
     counts = {'added': 0, 'updated': 0, 'skipped': 0}
     uploaded = 0
     # Finish interrupted transactions first, including articles not selected this run.
@@ -99,21 +84,21 @@ def _synchronize(k):
         doc = prepared.get(article_id)
         transaction = state['pending'].get(article_id)
         if not transaction:
-            if old and old['sha256'] == doc['sha256']:
+            if old and old['sha256'] == doc['sha256'] and old.get('ingestion_strategy') == 'whole_article_v1':
                 counts['skipped'] += 1
                 continue
-            transaction = {'sha256': doc['sha256'], 'stem': doc['stem'], 'chunks': doc['chunks'], 'files': {},
+            transaction = {'sha256': doc['sha256'], 'filename': doc['filename'], 'content': doc['content'], 'files': {},
                            'kind': 'updated' if old else 'added', 'ready': False,
                            'old_files': list(old['files'].values()) if old else []}
             state['pending'][article_id] = transaction
             save_json(k.path, state)
-        for i, content in enumerate(transaction['chunks'], 1):
-            name = f"{transaction['stem']}-part-{i}.md"
-            if name not in transaction['files']:
-                remote = client.files.create(file=(name, content.encode(), 'text/markdown'), purpose='assistants')
-                transaction['files'][name] = {'id': remote.id, 'sha256': hashlib.sha256(content.encode()).hexdigest(), 'indexed': False}
-                uploaded += 1
-                save_json(k.path, state)
+        name = transaction['filename']
+        content = transaction['content']
+        if name not in transaction['files']:
+            remote = client.files.create(file=(name, content.encode(), 'text/markdown'), purpose='assistants')
+            transaction['files'][name] = {'id': remote.id, 'sha256': hashlib.sha256(content.encode()).hexdigest(), 'indexed': False}
+            uploaded += 1
+            save_json(k.path, state)
         if not transaction['ready']:
             if not transaction.get('batch_id'):
                 transaction['batch_id'] = client.vector_stores.file_batches.create(vector_store_id=store_id,
@@ -136,7 +121,7 @@ def _synchronize(k):
             for record in transaction['files'].values():
                 record['indexed'] = True
             save_json(k.path, state)
-        # Remove all old parts only after all replacement parts are ready.
+        # Detach the previous article file only after replacement indexing succeeds.
         while transaction['old_files']:
             record = transaction['old_files'][0]
             try:
@@ -145,7 +130,7 @@ def _synchronize(k):
                 pass  # Previous attempt may have detached it before a crash.
             transaction['old_files'].pop(0)
             save_json(k.path, state)
-        state['articles'][article_id] = {'sha256': transaction['sha256'], 'files': transaction['files']}
+        state['articles'][article_id] = {'sha256': transaction['sha256'], 'ingestion_strategy': 'whole_article_v1', 'files': transaction['files']}
         counts[transaction['kind']] += 1
         del state['pending'][article_id]
         state['files'] = {n: f for a in state['articles'].values() for n, f in a['files'].items()}
@@ -157,12 +142,11 @@ def _synchronize(k):
             raise ValueError('Recovered an earlier version; run sync again for the latest source.')
     store = client.vector_stores.retrieve(store_id)
     summary = {'completed_at': datetime.now(timezone.utc).isoformat(), 'vector_store_id': store_id,
-               **counts, 'uploaded_chunk_files': uploaded, 'source_articles': len(prepared),
-               'prepared_chunks': sum(len(d['chunks']) for d in prepared.values()),
-               'indexed_chunk_files': len(state['files']), 'provider_file_counts': store.file_counts.model_dump(),
+               **counts, 'uploaded_files': uploaded, 'source_articles': len(prepared),
+               'indexed_files': len(state['files']), 'provider_file_counts': store.file_counts.model_dump(),
                'usage_bytes': store.usage_bytes, 'chunking_strategy': STRATEGY,
-               'count_note': 'Prepared chunks and indexed files are counted separately; internal embedding chunk total is not exposed.'}
+               'count_note': 'One Markdown file per article; OpenAI performs chunking and embedding. Internal chunk total is not exposed.'}
     save_json(settings.state_dir / 'sync-report.json', summary)
     save_json(settings.state_dir / 'upload-report.json', summary)
-    LOGGER.info('Sync complete: added=%d updated=%d skipped=%d uploaded_chunks=%d', counts['added'], counts['updated'], counts['skipped'], uploaded)
+    LOGGER.info('Sync complete: added=%d updated=%d skipped=%d uploaded_files=%d', counts['added'], counts['updated'], counts['skipped'], uploaded)
     return summary
